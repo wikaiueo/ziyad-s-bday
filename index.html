@@ -3,694 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ziyad's Special Day</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <title>Ziyad's Special Day | From your future wife, Wika</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JS Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Strictly non-script sans-serif fonts (Fredoka & Quicksand) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for cute UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root {
-            --bg-color: #fff5f7;
-            --card-bg: #ffffff;
-            --primary-pink: #ff758f;
-            --accent-pink: #ffb3c1;
-            --dark-text: #4a4e69;
-            --light-pink: #ffe5ec;
-            --purple-accent: #c77dff;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Quicksand', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--dark-text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
+            font-family: 'Quicksand', 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #f3e8ff 50%, #ffe4e6 100%);
+            color: #4a4a4a;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-bg);
-            border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(255, 117, 143, 0.15);
-            padding: 25px 20px;
-            text-align: center;
-            position: relative;
-            border: 3px solid var(--light-pink);
-        }
-
-        /* Audio Player Bar */
-        .music-bar {
-            background: var(--light-pink);
-            border-radius: 50px;
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--primary-pink);
-        }
-
-        .music-btn {
-            background: var(--primary-pink);
-            color: white;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            box-shadow: 0 3px 8px rgba(255, 117, 143, 0.4);
-            transition: transform 0.2s;
-        }
-
-        .music-btn:active {
-            transform: scale(0.9);
-        }
-
-        /* Pages logic */
-        .page {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out forwards;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1, h2, h3 {
+        .heading-font {
             font-family: 'Fredoka', sans-serif;
-            color: var(--primary-pink);
-            letter-spacing: 0.5px;
         }
 
-        h1 { font-size: 26px; margin-bottom: 6px; }
-        .subtitle { font-size: 14px; color: #888; font-weight: 600; margin-bottom: 20px; }
-
-        /* Page 1 Specific */
-        .emoji-hero {
-            font-size: 85px;
-            margin: 20px 0;
-            display: inline-block;
-            filter: drop-shadow(0 8px 15px rgba(255, 117, 143, 0.2));
-            animation: pulse 2s infinite ease-in-out;
+        /* Floating Hearts Background Animation */
+        .heart {
+            position: absolute;
+            bottom: -20px;
+            font-size: 20px;
+            color: #f43f5e;
+            animation: float 6s linear infinite;
+            opacity: 0.6;
+            z-index: 0;
+            pointer-events: none;
         }
 
-        @keyframes pulse {
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Subtle Pulse Animation */
+        @keyframes pulse-subtle {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+            50% { transform: scale(1.03); }
         }
 
-        .timer-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin: 20px 0;
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3.5s infinite ease-in-out;
         }
 
-        .timer-box {
-            background: var(--bg-color);
-            padding: 10px 5px;
-            border-radius: 16px;
-            border: 2px solid var(--accent-pink);
+        /* Glassmorphism Styling */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(244, 63, 94, 0.12);
         }
 
-        .timer-num {
-            font-size: 20px;
-            font-weight: 700;
-            font-family: 'Fredoka', sans-serif;
-            color: var(--primary-pink);
+        /* Smooth page transition effect */
+        .page-step {
+            transition: all 0.4s ease-in-out;
         }
 
-        .timer-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: #999;
-            margin-top: 2px;
+        /* Candle Flame Blow Animation */
+        .flame {
+            transition: all 0.4s ease;
+        }
+        .flame.blown-out {
+            opacity: 0;
+            transform: scale(0);
         }
 
-        .tz-info {
-            font-size: 11px;
-            color: #aaa;
-            margin-bottom: 20px;
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
-
-        /* Buttons */
-        .btn-main {
-            background: linear-gradient(135deg, #ff758f, #ffb3c1);
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 8px 20px rgba(255, 117, 143, 0.35);
-            transition: all 0.2s;
-            width: 100%;
-            margin-top: 10px;
+        ::-webkit-scrollbar-track {
+            background: #ffe4e6;
+            border-radius: 10px;
         }
-
-        .btn-main:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(255, 117, 143, 0.45);
-        }
-
-        .btn-main:active {
-            transform: translateY(1px);
-        }
-
-        /* Cute Question Cards */
-        .question-card {
-            background: var(--bg-color);
-            padding: 20px;
-            border-radius: 20px;
-            margin: 15px 0;
-            border: 2px dashed var(--accent-pink);
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .btn-yes {
-            background: #ff758f;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 700;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .btn-no {
-            background: #e0e0e0;
-            color: #666;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 700;
-            cursor: pointer;
-            flex: 1;
-            position: relative;
-        }
-
-        /* Gift Boxes Grid */
-        .gift-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
-        .gift-item {
-            background: var(--bg-color);
-            border: 2px solid var(--accent-pink);
-            border-radius: 18px;
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 700;
-            font-size: 14px;
-            color: var(--dark-text);
-            text-align: left;
-        }
-
-        .gift-item:hover {
-            background: var(--light-pink);
-            transform: scale(1.02);
-        }
-
-        .gift-item .icon {
-            font-size: 22px;
-        }
-
-        /* Modal / Popup for Gift Content */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 24px;
-            padding: 25px;
-            max-width: 420px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            text-align: left;
-            border: 3px solid var(--primary-pink);
-        }
-
-        .modal-title {
-            font-family: 'Fredoka', sans-serif;
-            color: var(--primary-pink);
-            font-size: 20px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .modal-body {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #444;
-            white-space: pre-line;
-        }
-
-        .modal-close {
-            background: var(--primary-pink);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 700;
-            display: block;
-            margin: 18px auto 0 auto;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        /* Virtual Cake */
-        .cake-container {
-            margin: 25px 0;
-            position: relative;
-        }
-
-        .cake-emoji {
-            font-size: 90px;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .candle-status {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary-pink);
-            margin-top: 10px;
-        }
-
-        /* Letters Section */
-        .letter-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-
-        .tab-btn {
-            background: var(--light-pink);
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--primary-pink);
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .tab-btn.active {
-            background: var(--primary-pink);
-            color: white;
-        }
-
-        .letter-card {
-            background: var(--bg-color);
-            border-radius: 18px;
-            padding: 18px;
-            text-align: left;
-            font-size: 13.5px;
-            line-height: 1.6;
-            border: 2px solid var(--accent-pink);
-            min-height: 150px;
-        }
-
-        /* Couple Emoji Bar */
-        .couple-bar {
-            font-size: 28px;
-            margin: 10px 0;
+        ::-webkit-scrollbar-thumb {
+            background: #fb7185;
+            border-radius: 10px;
         }
     </style>
 </head>
-<body>
+<body class="relative min-h-screen flex flex-col justify-between items-center p-4 sm:p-6 overflow-x-hidden">
 
-    <!-- Audio Element -->
-    <audio id="bgMusic" loop preload="auto">
-        <source src="https://files.catbox.moe/97a82p.mp3" type="audio/mpeg">
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+    <!-- Floating Background Hearts Container -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Music Player Top Bar -->
+    <header class="w-full max-w-md z-50 mb-4">
+        <div class="glass-card rounded-2xl p-3 px-5 flex items-center justify-between shadow-md">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-rose-400 text-white flex items-center justify-center animate-spin" style="animation-duration: 6s;" id="cd-icon">
+                    <i class="fa-solid fa-music"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] sm:text-xs text-rose-500 font-bold uppercase tracking-wider">Background Music</p>
+                    <p class="text-xs sm:text-sm font-semibold text-gray-700">Indila - Love Story 🎵</p>
+                </div>
+            </div>
+            <button id="music-toggle" onclick="toggleAudio()" class="bg-rose-500 hover:bg-rose-600 active:scale-95 text-white p-3 rounded-full shadow-lg transition-all flex items-center justify-center w-10 h-10">
+                <i class="fa-solid fa-play" id="play-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Audio Element with Fallbacks -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://raw.githubusercontent.com/iaa-01/music-assets/main/indila-love-story.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-love-story-112347.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="container">
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="w-full max-w-xl z-10 my-auto flex-grow flex flex-col justify-center items-center">
 
-        <!-- Sticky Music Player Bar -->
-        <div class="music-bar">
-            <span>🎵 Indila - Love Story</span>
-            <button class="music-btn" id="musicToggle" onclick="toggleMusic()">▶</button>
-        </div>
-
-        <!-- PAGE 1: Countdown Landing Page -->
-        <div class="page active" id="page1">
-            <h1>Ziyad's Special Day</h1>
-            <div class="subtitle">from your future wife, Wika 🧑‍🤝‍🧑❤️</div>
-
-            <div class="emoji-hero">👩‍❤️‍💋‍👨</div>
-
-            <div class="timer-grid">
-                <div class="timer-box">
-                    <div class="timer-num" id="days">00</div>
-                    <div class="timer-label">Days</div>
-                </div>
-                <div class="timer-box">
-                    <div class="timer-num" id="hours">00</div>
-                    <div class="timer-label">Hours</div>
-                </div>
-                <div class="timer-box">
-                    <div class="timer-num" id="mins">00</div>
-                    <div class="timer-label">Mins</div>
-                </div>
-                <div class="timer-box">
-                    <div class="timer-num" id="secs">00</div>
-                    <div class="timer-label">Secs</div>
-                </div>
+        <!-- ================= PAGE 1: LANDING PAGE ================= -->
+        <section id="page-1" class="page-step w-full glass-card rounded-3xl p-6 sm:p-8 text-center shadow-xl border-4 border-rose-100 animate-pulse-subtle">
+            <!-- Subtitle / Signature update as requested -->
+            <div class="inline-block bg-rose-100 text-rose-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
+                <i class="fa-solid fa-heart mr-1"></i> From your future wife, Wika
             </div>
-            <div class="tz-info">📍 Calculated in France Timezone (CET)</div>
 
-            <div class="couple-bar">👦🏻💖👧🏻</div>
+            <h1 class="heading-font text-3xl sm:text-4xl font-bold text-rose-600 mb-2">
+                Counting down to
+            </h1>
+            <h2 class="heading-font text-2xl sm:text-3xl font-extrabold text-indigo-900 tracking-wide mb-6 uppercase">
+                Ziyad's Special Day 🥳✨
+            </h2>
 
-            <button class="btn-main" onclick="nextPage(2)">Next Surprise ➔</button>
-        </div>
-
-        <!-- PAGE 2: Cute Surprise Check -->
-        <div class="page" id="page2">
-            <h2>Are you ready for surprise, baby? 🥺✨</h2>
-            <div class="subtitle">Please think carefully before clicking!</div>
-
-            <div class="question-card">
-                <div style="font-size: 60px; margin-bottom: 10px;">🧸🎈</div>
-                <p style="font-weight: 700;">Are you excited to see what I made for you?</p>
-                <div class="btn-group">
-                    <button class="btn-yes" onclick="nextPage(3)">YES! 😍</button>
-                    <button class="btn-no" id="noBtn" onmouseover="dodgeBtn()" onclick="dodgeBtn()">NO 😜</button>
-                </div>
+            <!-- Front page features ONLY 1 kissing emoji couple -->
+            <div class="my-6 text-7xl sm:text-8xl filter drop-shadow-md hover:scale-110 transition-transform cursor-pointer">
+                👩‍❤️‍💋‍👨
             </div>
-            <div class="couple-bar">👩‍❤️‍👨</div>
-        </div>
 
-        <!-- PAGE 3: Interactive Gift Boxes -->
-        <div class="page" id="page3">
-            <h2>Gift Boxes For You 🎁❤️</h2>
-            <div class="subtitle">Click each gift to open your special message, baby!</div>
+            <!-- France Time Zone Indicator -->
+            <p class="text-xs text-rose-400 font-medium mb-3">
+                <i class="fa-solid fa-clock mr-1"></i> Paris, France Timezone (CET/CEST)
+            </p>
 
-            <div class="gift-grid">
-                <div class="gift-item" onclick="openGift(1)">
-                    <span>🎁 Gift 1: Open When You Miss Me</span>
-                    <span class="icon">💌</span>
+            <!-- Countdown Timer Grid -->
+            <div class="grid grid-cols-4 gap-2 sm:gap-3 mb-8">
+                <div class="bg-rose-500 text-white p-3 rounded-2xl shadow-md">
+                    <span id="days" class="heading-font text-2xl sm:text-3xl font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs font-semibold uppercase opacity-90">Days</span>
                 </div>
-                <div class="gift-item" onclick="openGift(2)">
-                    <span>🎁 Gift 2: Reasons Why I Love You</span>
-                    <span class="icon">💖</span>
+                <div class="bg-rose-400 text-white p-3 rounded-2xl shadow-md">
+                    <span id="hours" class="heading-font text-2xl sm:text-3xl font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs font-semibold uppercase opacity-90">Hours</span>
                 </div>
-                <div class="gift-item" onclick="openGift(3)">
-                    <span>🎁 Gift 3: Our Little Future</span>
-                    <span class="icon">🏡</span>
+                <div class="bg-purple-400 text-white p-3 rounded-2xl shadow-md">
+                    <span id="minutes" class="heading-font text-2xl sm:text-3xl font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs font-semibold uppercase opacity-90">Mins</span>
                 </div>
-                <div class="gift-item" onclick="openGift(4)">
-                    <span>🎁 Gift 4: When You Feel Sad</span>
-                    <span class="icon">🫂</span>
-                </div>
-                <div class="gift-item" onclick="openGift(5)" style="border-color: var(--primary-pink); background: var(--light-pink);">
-                    <span>🎁 Gift 5: When You Feel Bored of Me</span>
-                    <span class="icon">😭💢</span>
+                <div class="bg-purple-500 text-white p-3 rounded-2xl shadow-md">
+                    <span id="seconds" class="heading-font text-2xl sm:text-3xl font-bold block">00</span>
+                    <span class="text-[10px] sm:text-xs font-semibold uppercase opacity-90">Secs</span>
                 </div>
             </div>
 
-            <button class="btn-main" onclick="nextPage(4)">Make a Wish ➔</button>
-        </div>
+            <p class="text-sm text-gray-600 mb-6 font-medium">
+                January 31, 2027 🎂✨
+            </p>
 
-        <!-- PAGE 4: Virtual Birthday Cake -->
-        <div class="page" id="page4">
-            <h2>Virtual Cake For Baby 🎂✨</h2>
-            <div class="subtitle">It's calorie-free but full of love!</div>
+            <button onclick="goToPage(2)" class="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white heading-font text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl transform active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span>Start The Journey</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
 
-            <div class="cake-container">
-                <div class="cake-emoji" id="cakeEmoji" onclick="blowCandle()">🎂</div>
-                <div class="candle-status" id="cakeStatus">Tap the cake to blow out the candles! 🕯️✨</div>
+        <!-- ================= PAGE 2: QUESTION FOR BABY ================= -->
+        <section id="page-2" class="page-step w-full glass-card rounded-3xl p-6 sm:p-8 text-center shadow-xl border-4 border-rose-100 hidden">
+            <div class="text-6xl mb-4">👦🏻💖👧🏻</div>
+            <h2 class="heading-font text-2xl sm:text-3xl font-bold text-rose-600 mb-4">
+                Are you ready for your surprise, baby? 🥺💖
+            </h2>
+            <p class="text-gray-600 mb-8 text-base">
+                I prepared something special just for you! Make sure your music is turned on! 🎶✨
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="goToPage(3)" class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white heading-font font-bold rounded-2xl shadow-md active:scale-95 transition-all text-base">
+                    YES, I'M READY BABY! 🥰
+                </button>
+                <button onclick="dramaticNoButton(this)" class="flex-1 py-3.5 bg-gray-200 hover:bg-gray-300 text-gray-700 heading-font font-bold rounded-2xl shadow-md active:scale-95 transition-all text-base">
+                    No, wait a sec 🙈
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: GIFT BOXES SECTION ================= -->
+        <section id="page-3" class="page-step w-full glass-card rounded-3xl p-6 sm:p-8 text-center shadow-xl border-4 border-rose-100 hidden">
+            <div class="inline-block bg-purple-100 text-purple-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-3">
+                <i class="fa-solid fa-gift mr-1"></i> Special Surprises
+            </div>
+            <h2 class="heading-font text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                Gift Boxes For You 🎁✨
+            </h2>
+            <p class="text-sm text-gray-500 mb-6">
+                Click any gift box below to open your special message, baby! 💖
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <!-- Gift 1 -->
+                <button onclick="openGift(1)" class="p-4 bg-rose-50 hover:bg-rose-100 border-2 border-rose-200 rounded-2xl flex items-center gap-4 transition-all hover:scale-105 text-left group">
+                    <div class="text-4xl group-hover:bounce">🎁</div>
+                    <div>
+                        <span class="text-xs font-bold text-rose-500 block uppercase">Gift #1</span>
+                        <span class="heading-font font-semibold text-gray-800 text-sm">Open When You Miss Me 🥺</span>
+                    </div>
+                </button>
+
+                <!-- Gift 2 -->
+                <button onclick="openGift(2)" class="p-4 bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-2xl flex items-center gap-4 transition-all hover:scale-105 text-left group">
+                    <div class="text-4xl group-hover:bounce">📜</div>
+                    <div>
+                        <span class="text-xs font-bold text-purple-500 block uppercase">Gift #2</span>
+                        <span class="heading-font font-semibold text-gray-800 text-sm">Reasons Why I Love You 💖</span>
+                    </div>
+                </button>
+
+                <!-- Gift 3 -->
+                <button onclick="openGift(3)" class="p-4 bg-pink-50 hover:bg-pink-100 border-2 border-pink-200 rounded-2xl flex items-center gap-4 transition-all hover:scale-105 text-left group">
+                    <div class="text-4xl group-hover:bounce">🏡</div>
+                    <div>
+                        <span class="text-xs font-bold text-pink-500 block uppercase">Gift #3</span>
+                        <span class="heading-font font-semibold text-gray-800 text-sm">Our Little Future 🧸</span>
+                    </div>
+                </button>
+
+                <!-- Gift 4 -->
+                <button onclick="openGift(4)" class="p-4 bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 rounded-2xl flex items-center gap-4 transition-all hover:scale-105 text-left group">
+                    <div class="text-4xl group-hover:bounce">🫂</div>
+                    <div>
+                        <span class="text-xs font-bold text-amber-600 block uppercase">Gift #4</span>
+                        <span class="heading-font font-semibold text-gray-800 text-sm">When You Feel Sad 🥺❤️</span>
+                    </div>
+                </button>
             </div>
 
-            <p style="font-size: 13px; color: #777; margin: 15px 0;">Make a wish in your heart before blowing! 💫</p>
-
-            <button class="btn-main" onclick="nextPage(5)">Read My Letters ➔</button>
-        </div>
-
-        <!-- PAGE 5: Letters To My Favorite Person -->
-        <div class="page" id="page5">
-            <h2>Letters To My Favorite Person 💌</h2>
-            <div class="subtitle">A collection of notes written just for you, baby!</div>
-
-            <div class="letter-tabs">
-                <button class="tab-btn active" onclick="showLetter(1)">Letter 1 🌸</button>
-                <button class="tab-btn" onclick="showLetter(2)">Letter 2 💖</button>
-                <button class="tab-btn" onclick="showLetter(3)">Letter 3 🌙</button>
+            <!-- Gift 5 Button (Updated Label Requirement) -->
+            <div class="mb-8">
+                <button onclick="openGift(5)" class="w-full p-4 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white rounded-2xl font-bold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <span class="text-2xl">💢</span>
+                    <span class="heading-font text-base sm:text-lg">Gift 5 : When u feel bored of me 😭💢</span>
+                </button>
             </div>
 
-            <div class="letter-card" id="letterContent">
-                <!-- Letter 1 Content Default -->
-                <strong>My Dearest Ziyad,</strong><br><br>
-                Even though we are miles apart, you are always the closest person to my heart. Every single day with you feels like a blessing I never knew I needed. Thank you for being my comfort, my happy place, and my favorite person to share everything with.<br><br>
-                Forever yours,<br>
-                <strong>Wika 👧🏻❤️</strong>
+            <button onclick="goToPage(4)" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white heading-font text-lg font-bold rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2">
+                <span>Continue to Virtual Cake 🎂</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+        <!-- ================= PAGE 4: VIRTUAL CAKE SECTION ================= -->
+        <section id="page-4" class="page-step w-full glass-card rounded-3xl p-6 sm:p-8 text-center shadow-xl border-4 border-rose-100 hidden">
+            <div class="inline-block bg-pink-100 text-pink-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-3">
+                <i class="fa-solid fa-cake-candles mr-1"></i> Make A Wish
+            </div>
+            <h2 class="heading-font text-2xl sm:text-3xl font-bold text-gray-800 mb-3">
+                Here's Your Virtual Cake, Baby! 🎂✨
+            </h2>
+            <p class="text-sm text-gray-600 mb-6">
+                It's calorie-free but full of love. Blow your candle and make a wish! 🕯️💖
+            </p>
+
+            <!-- Interactive Cake Visual -->
+            <div class="relative my-8 flex flex-col items-center justify-center cursor-pointer" onclick="blowCandle()">
+                <!-- Candle Flame -->
+                <div id="candle-flame" class="flame text-4xl filter drop-shadow-lg mb-[-10px] z-10 animate-pulse">
+                    🔥
+                </div>
+                <!-- Candle Stick -->
+                <div class="w-4 h-12 bg-gradient-to-b from-yellow-200 to-amber-400 rounded-t-sm shadow-inner mb-[-4px] z-0"></div>
+                <!-- Cake Layers -->
+                <div class="w-48 h-12 bg-rose-300 rounded-t-2xl flex items-center justify-center text-white font-bold shadow-md">
+                    🍓 🍓 🍓 🍓
+                </div>
+                <div class="w-60 h-16 bg-pink-400 rounded-t-2xl flex items-center justify-center text-white font-bold shadow-md">
+                    💖 💖 💖 💖 💖
+                </div>
+                <div class="w-72 h-20 bg-purple-300 rounded-b-2xl flex items-center justify-center text-white font-bold shadow-lg border-t-4 border-purple-200">
+                    ✨ ZIYAD & WIKA ✨
+                </div>
             </div>
 
-            <div class="couple-bar" style="margin-top: 15px;">🧑‍🤝‍🧑💕</div>
+            <div id="cake-status" class="mb-6 font-semibold text-rose-500 text-sm">
+                👆 Click on the flame to blow out the candle, baby! 🕯️
+            </div>
 
-            <button class="btn-main" onclick="nextPage(1)" style="background: var(--dark-text); margin-top: 15px;">Back to Start 🔄</button>
+            <button onclick="goToPage(5)" class="w-full py-4 bg-rose-500 hover:bg-rose-600 text-white heading-font text-lg font-bold rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2">
+                <span>Read My Letters To You 💌</span>
+                <i class="fa-solid fa-heart"></i>
+            </button>
+        </section>
+
+        <!-- ================= PAGE 5: LOVE LETTERS COLLECTION ================= -->
+        <section id="page-5" class="page-step w-full glass-card rounded-3xl p-6 sm:p-8 text-center shadow-xl border-4 border-rose-100 hidden">
+            <div class="inline-block bg-rose-100 text-rose-600 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-3">
+                <i class="fa-solid fa-envelope-open-text mr-1"></i> Special Letters
+            </div>
+            <h2 class="heading-font text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                Letters To My Favorite Person 💌✨
+            </h2>
+            <p class="text-sm text-gray-500 mb-6">
+                A collection of letters I wrote just for you, baby. 🧑‍🤝‍🧑💖
+            </p>
+
+            <!-- Letter Tabs -->
+            <div class="flex justify-center gap-2 mb-6 overflow-x-auto pb-2">
+                <button onclick="switchLetter(1)" id="letter-tab-1" class="px-4 py-2 bg-rose-500 text-white text-xs font-bold rounded-xl shadow-md transition-all">Letter 1 🌸</button>
+                <button onclick="switchLetter(2)" id="letter-tab-2" class="px-4 py-2 bg-rose-100 text-rose-600 text-xs font-bold rounded-xl hover:bg-rose-200 transition-all">Letter 2 ✨</button>
+                <button onclick="switchLetter(3)" id="letter-tab-3" class="px-4 py-2 bg-rose-100 text-rose-600 text-xs font-bold rounded-xl hover:bg-rose-200 transition-all">Letter 3 💖</button>
+            </div>
+
+            <!-- Letter Box Display -->
+            <div class="bg-amber-50/80 border-2 border-amber-200 rounded-2xl p-6 text-left shadow-inner mb-6 text-gray-700 leading-relaxed text-sm sm:text-base relative min-h-[220px]">
+                <div id="letter-content-1" class="letter-body">
+                    <p class="font-bold text-rose-600 mb-2">To my dearest favorite person, Ziyad 💖</p>
+                    <p class="mb-3">
+                        Distance in kilometers might keep us apart right now while you are in France, but distance can never diminish how deeply I care for you. Every single second counting down to your special day reminds me of how blessed I am to have you in my life.
+                    </p>
+                    <p>
+                        Thank you for being my safe space, my favorite notification, and my sweetest smile every day. I love you endlessly, baby! 👦🏻💖👧🏻
+                    </p>
+                </div>
+
+                <div id="letter-content-2" class="letter-body hidden">
+                    <p class="font-bold text-rose-600 mb-2">Why you mean the world to me 🌟</p>
+                    <p class="mb-3">
+                        I love the way we talk about everything and nothing at all. I love how you listen to me, how you support me, and how you make even ordinary moments feel extraordinarily special.
+                    </p>
+                    <p>
+                        No matter how busy or tired you are, you always make time for us. Never forget that I am always here for you, cheering for you in everything you do! 🧸✨
+                    </p>
+                </div>
+
+                <div id="letter-content-3" class="letter-body hidden">
+                    <p class="font-bold text-rose-600 mb-2">My wish for you, baby 🎂❤️</p>
+                    <p class="mb-3">
+                        As your birthday approaches on January 31st, my biggest wish for you is genuine happiness, peace in your heart, good health, and success in everything you strive for.
+                    </p>
+                    <p>
+                        I hope we keep choosing each other, growing together, and creating the sweetest memories side by side. I love you the mostest, baby! 👩‍❤️‍💋‍👨💋
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center my-4 text-4xl">
+                👩‍❤️‍👨
+            </div>
+
+            <button onclick="goToPage(1)" class="w-full py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 heading-font font-bold rounded-2xl shadow-sm transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Replay From Beginning</span>
+            </button>
+        </section>
+
+    </main>
+
+    <!-- ================= MODAL / POPUP FOR GIFTS ================= -->
+    <div id="gift-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl relative border-4 border-rose-200 max-h-[85vh] flex flex-col">
+            <button onclick="closeGiftModal()" class="absolute top-4 right-4 text-gray-400 hover:text-rose-500 text-2xl font-bold transition-colors">
+                &times;
+            </button>
+
+            <div id="modal-header" class="text-center mb-4">
+                <span id="modal-emoji" class="text-5xl block mb-2">🎁</span>
+                <h3 id="modal-title" class="heading-font text-2xl font-bold text-rose-600">Gift Title</h3>
+            </div>
+
+            <div id="modal-body" class="overflow-y-auto pr-2 text-gray-700 text-sm sm:text-base leading-relaxed flex-grow">
+                <!-- Dynamic Content Loaded Here -->
+            </div>
+
+            <div class="mt-6 text-center pt-3 border-t border-rose-100">
+                <button onclick="closeGiftModal()" class="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white heading-font font-bold rounded-xl shadow-md transition-all">
+                    Close With Love ❤️
+                </button>
+            </div>
         </div>
-
     </div>
 
-    <!-- Modal Popup for Gifts -->
-    <div class="modal" id="giftModal">
-        <div class="modal-content">
-            <div class="modal-title" id="modalTitle">Gift Title</div>
-            <div class="modal-body" id="modalBody">Gift Content...</div>
-            <button class="modal-close" onclick="closeModal()">Close & Keep Safe 💖</button>
-        </div>
-    </div>
+    <!-- Footer -->
+    <footer class="w-full max-w-md text-center py-4 z-10 text-xs text-rose-500 font-medium">
+        Made with endless love by Wika for Ziyad 💖
+    </footer>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Audio Toggle
-        const audio = document.getElementById('bgMusic');
-        const musicBtn = document.getElementById('musicToggle');
+        // 1. Audio Player Management
+        const bgMusic = document.getElementById('bg-music');
+        const playIcon = document.getElementById('play-icon');
+        const cdIcon = document.getElementById('cd-icon');
         let isPlaying = false;
 
-        function toggleMusic() {
+        function toggleAudio() {
             if (isPlaying) {
-                audio.pause();
-                musicBtn.innerText = "▶";
+                bgMusic.pause();
+                playIcon.className = 'fa-solid fa-play';
+                cdIcon.classList.remove('animate-spin');
             } else {
-                audio.play().then(() => {
-                    musicBtn.innerText = "⏸";
-                    isPlaying = true;
-                }).catch(e => {
-                    alert("Click anywhere on the page first to allow music autoplay!");
+                bgMusic.play().then(() => {
+                    playIcon.className = 'fa-solid fa-pause';
+                    cdIcon.classList.add('animate-spin');
+                }).catch(err => {
+                    console.log('Audio playback status:', err);
                 });
             }
             isPlaying = !isPlaying;
         }
 
-        // Auto play on first click anywhere
-        document.body.addEventListener('click', function() {
-            if (!isPlaying) {
-                audio.play().then(() => {
-                    musicBtn.innerText = "⏸";
-                    isPlaying = true;
-                }).catch(() => {});
-            }
-        }, { once: true });
-
-        // Page Navigation
-        function nextPage(pageNum) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page' + pageNum).classList.add('active');
-            window.scrollTo(0, 0);
-        }
-
-        // Dodge No Button
-        function dodgeBtn() {
-            const btn = document.getElementById('noBtn');
-            const x = Math.random() * (window.innerWidth - 100) - (window.innerWidth / 2) + 50;
-            const y = Math.random() * 100 - 50;
-            btn.style.transform = `translate(${x}px, ${y}px)`;
-        }
-
-        // Countdown Timer to Jan 31, 2027 (France Time - CET/UTC+1)
+        // 2. Countdown Timer targeted for Jan 31, 2027 in France Timezone (CET: UTC+1)
         function updateCountdown() {
-            // Target date: Jan 31, 2027 00:00:00 CET (UTC+1)
-            const targetDate = new Date("2027-01-31T00:00:00+01:00").getTime();
+            const targetDate = new Date('2027-01-31T00:00:00+01:00').getTime();
             const now = new Date().getTime();
-            const diff = targetDate - now;
+            const difference = targetDate - now;
 
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
                 document.getElementById('days').innerText = String(days).padStart(2, '0');
                 document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-                document.getElementById('mins').innerText = String(mins).padStart(2, '0');
-                document.getElementById('secs').innerText = String(secs).padStart(2, '0');
+                document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
             } else {
                 document.getElementById('days').innerText = "00";
                 document.getElementById('hours').innerText = "00";
-                document.getElementById('mins').innerText = "00";
-                document.getElementById('secs').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
             }
         }
+
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        // Gift Data
-        const giftContents = {
+        // 3. Page Navigation Engine
+        function goToPage(pageNumber) {
+            for (let i = 1; i <= 5; i++) {
+                const page = document.getElementById(`page-${i}`);
+                if (page) page.classList.add('hidden');
+            }
+            const targetPage = document.getElementById(`page-${pageNumber}`);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            if (!isPlaying && pageNumber === 2) {
+                toggleAudio();
+            }
+        }
+
+        // 4. Playful "No" button handler
+        function dramaticNoButton(btn) {
+            btn.innerText = "Are you sure baby? 🥺";
+            btn.classList.remove('bg-gray-200');
+            btn.classList.add('bg-rose-300', 'text-white');
+            setTimeout(() => {
+                goToPage(3);
+            }, 1200);
+        }
+
+        // 5. Gifts Content & Modal Handling
+        const giftData = {
             1: {
-                title: "🎁 Gift 1: Open When You Miss Me 💌",
-                text: "If you ever miss me a little too much, remember that somewhere in this world, there's a girl who's smiling just because she has you in her life."
+                emoji: "🎁",
+                title: "Open When You Miss Me 🥺",
+                content: `<div class="p-4 bg-rose-50 rounded-2xl border border-rose-200 text-rose-800 font-medium">
+                    "If you ever miss me a little too much, remember that somewhere in this world, there's a girl who's smiling just because she has you in her life." 💖✨
+                </div>`
             },
             2: {
-                title: "🎁 Gift 2: Reasons Why I Love You 💖",
-                text: "• I love how you share little details about your day with me.
-• I love how you made time to call me in your busy day.
-• I love the way you try to explain me multiple times bcs I don't got what the mean was.
-• I love the way u do your best to provide me.
-• I love the way you think.
-• I love the way you treat me.
-• I love when you call me with many nickname.
-• I love that I can learn new things from you.
-• I love the way you make ordinary conversations feel special.
-• Duh, still soo many, babyyyyy!! 🥹💖"
+                emoji: "📜",
+                title: "Reasons Why I Love You 💖",
+                content: `<ul class="space-y-2 text-left text-gray-700">
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love how you share little details about your day with me.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love how you made time to call me in your busy day.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love the way you try to explain me multiple times bcs i don't got what the mean was.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love the way u do your best to provide me.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love the way you think.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love the way you treat me.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love when you call me with many nickname.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love that I can learn new things from you.</li>
+                    <li class="flex items-start gap-2"><span class="text-rose-500">🌸</span> I love the way you make ordinary conversations feel special.</li>
+                    <li class="p-3 bg-purple-100 text-purple-700 rounded-xl font-bold mt-2 text-center">duh still soo many, babyyyyy!! 🥰❤️</li>
+                </ul>`
             },
             3: {
-                title: "🎁 Gift 3: Our Little Future 🏡",
-                text: "I don't need our future to be perfect. I just hope we keep choosing each other, keep growing together, and build a life that feels peaceful for both of us."
+                emoji: "🏡",
+                title: "Our Little Future 🧸",
+                content: `<div class="p-4 bg-pink-50 rounded-2xl border border-pink-200 text-pink-800 font-medium">
+                    "I don't need our future to be perfect. I just hope we keep choosing each other, keep growing together, and build a life that feels peaceful for both of us." 👩‍❤️‍💋‍👨✨
+                </div>`
             },
             4: {
-                title: "🎁 Gift 4: When You Feel Sad 🫂",
-                text: "Hey, my love. 🥺❤️
-Hey, baby. Is something bothering you today?
-
-First of all, come here. Sending you the biggest virtual hug ever. 🫂❤️
-
-I know I can't always be there to hug you, hold your hand, or look into your eyes when things get difficult. But I hope you know that you don't have to pretend to be okay around me.
-
-You don't have to be strong all the time, my love. It's okay to feel tired, to have bad days, and to need a little time for yourself.
-
-If the world feels too heavy today, take a deep breath. You don't have to figure everything out right now. One step at a time, okay?
-
-And please remember that one bad day doesn't mean you have a bad life. You're doing better than you think, and I'm proud of you for everything you've been trying to do, even the things nobody else sees.
-
-I wish I could teleport to you right now, cuddle you, kiss your forehead, and annoy you until you finally smile. 😭❤️
-
-Until I can do that in person, here's your reminder:
-You are loved. You are appreciated. You are not alone. And you don't have to go through everything by yourself.
-
-I love you, my boy. On your happiest days, on your hardest days, and on the days when you don't even know how you feel.
-
-Now, come on. Give me a little smile, baby. Just one. For me? 🥹💋
-Your girl is always rooting for you. ❤️"
+                emoji: "🫂",
+                title: "When You Feel Sad 🥺❤️",
+                content: `<div class="space-y-3 text-gray-700 text-sm sm:text-base">
+                    <p class="font-bold text-rose-600">Hey, my love. 🥺❤️</p>
+                    <p>Hey, baby. Is something bothering you today?</p>
+                    <p>First of all, come here. Sending you the biggest virtual hug ever. 🫂❤️</p>
+                    <p>I know I can't always be there to hug you, hold your hand, or look into your eyes when things get difficult. But I hope you know that you don't have to pretend to be okay around me.</p>
+                    <p>You don't have to be strong all the time, my love. It's okay to feel tired, to have bad days, and to need a little time for yourself.</p>
+                    <p>If the world feels too heavy today, take a deep breath. You don't have to figure everything out right now. One step at a time, okay?</p>
+                    <p>And please remember that one bad day doesn't mean you have a bad life. You're doing better than you think, and I'm proud of you for everything you've been trying to do, even the things nobody else sees.</p>
+                    <p>I wish I could teleport to you right now, cuddle you, kiss your forehead, and annoy you until you finally smile. 😭❤️</p>
+                    <p class="font-medium bg-rose-50 p-3 rounded-xl border border-rose-200">
+                        Until I can do that in person, here's your reminder:<br>
+                        You are loved. You are appreciated. You are not alone. And you don't have to go through everything by yourself.
+                    </p>
+                    <p>I love you, my boy. On your happiest days, on your hardest days, and on the days when you don't even know how you feel.</p>
+                    <p class="font-bold text-rose-600">Now, come on. Give me a little smile, baby. Just one. For me? 🥹💋</p>
+                    <p class="text-xs text-gray-500 italic">Your girl is always rooting for you. ❤️</p>
+                </div>`
             },
             5: {
-                title: "🎁 Gift 5: EXCUSE ME, SIR??? 😭💢",
-                text: "Wait a damn minute.
-ARE YOU REALLY FEELING BORED WITH ME???
-HOW DARE YOUUUU!!! 😭😭😭💔
-
-ME??? BORING???
-The same girl who gives you unlimited access to her cuteness, her silliness, her random stories, her dramatic reactions, and her premium-quality nonsense EVERY SINGLE DAY???
-
-AND YOU HAVE THE AUDACITY TO BE BORED??? 😭🤨
-
-Oh, so that's how it is now, huh??? VERY INTERESTING, SIR. VERY INTERESTING. 🙂
-I see how it is.
-
-*Pretends to pack my bags while crying dramatically.* 🧳😭
-
-Fine. Go ahead. Find someone else who will annoy you, steal your attention, send you random pictures, ask you a million questions, and still love you even when you're being a little annoying yourself.
-
-I'LL WAIT. 😤💔
-...
-Okay, I'm done. Come back here. 😭🫂❤️"
+                emoji: "😭💢",
+                title: "When u feel bored of me 😭💢",
+                content: `<div class="space-y-3 text-rose-900 font-semibold text-sm sm:text-base bg-red-50 p-4 rounded-2xl border-2 border-red-200">
+                    <p class="text-xl font-bold text-red-600">EXCUSE ME, SIR??? 😭💢</p>
+                    <p class="text-lg">Wait a damn minute.</p>
+                    <p class="text-lg text-red-500">ARE YOU REALLY FEELING BORED WITH ME???</p>
+                    <p class="text-xl font-extrabold text-red-600">HOW DARE YOUUUU!!! 😭😭😭💔</p>
+                    <p class="text-lg">ME??? BORING???</p>
+                    <p>The same girl who gives you unlimited access to her cuteness, her silliness, her random stories, her dramatic reactions, and her premium-quality nonsense EVERY SINGLE DAY???</p>
+                    <p class="text-red-600">AND YOU HAVE THE AUDACITY TO BE BORED??? 😭🤨</p>
+                    <p>Oh, so that's how it is now, huh??? VERY INTERESTING, SIR. VERY INTERESTING. 🙂</p>
+                    <p>I see how it is.</p>
+                    <p class="italic text-gray-600">*Pretends to pack my bags while crying dramatically.* 🧳😭</p>
+                    <p>Fine. Go ahead. Find someone else who will annoy you, steal your attention, send you random pictures, ask you a million questions, and still love you even when you're being a little annoying yourself.</p>
+                    <p class="text-red-700 font-extrabold text-lg">I'LL WAIT. 😤💔</p>
+                    <p class="text-gray-400">...</p>
+                    <p class="text-rose-600 text-lg font-bold">Okay, I'm done. Come back here. 😭🫂❤️</p>
+                </div>`
             }
         };
 
         function openGift(id) {
-            document.getElementById('modalTitle').innerText = giftContents[id].title;
-            document.getElementById('modalBody').innerText = giftContents[id].text;
-            document.getElementById('giftModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('giftModal').style.display = 'none';
-        }
-
-        // Blow Candle
-        let candleBlown = false;
-        function blowCandle() {
-            if (!candleBlown) {
-                document.getElementById('cakeEmoji').innerText = "🍰";
-                document.getElementById('cakeStatus').innerText = "Yay! Candle blown! All your wishes will come true, baby! 🎉🥳✨";
-                candleBlown = true;
+            const gift = giftData[id];
+            if (gift) {
+                document.getElementById('modal-emoji').innerText = gift.emoji;
+                document.getElementById('modal-title').innerText = gift.title;
+                document.getElementById('modal-body').innerHTML = gift.content;
+                document.getElementById('gift-modal').classList.remove('hidden');
             }
         }
 
-        // Letters Switcher
-        const letters = {
-            1: `<strong>My Dearest Ziyad,</strong><br><br>Even though we are miles apart, you are always the closest person to my heart. Every single day with you feels like a blessing I never knew I needed. Thank you for being my comfort, my happy place, and my favorite person to share everything with.<br><br>Forever yours,<br><strong>Wika 👧🏻❤️</strong>`,
-            2: `<strong>To My Love,</strong><br><br>Thank you for always listening to my endless stories, supporting my dreams, and making me feel so cherished even from afar. I hope this year brings you all the success, warmth, and happiness you truly deserve.<br><br>With all my love,<br><strong>Wika 🌸</strong>`,
-            3: `<strong>To My Favorite Person,</strong><br><br>I can't wait for the day when we don't have to count down the days through screens anymore. Until then, remember I'm always cheering for you, missing you, and loving you more each day.<br><br>Always & forever,<br><strong>Wika 👩‍❤️‍👨</strong>`
-        };
-
-        function showLetter(num) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById('letterContent').innerHTML = letters[num];
+        function closeGiftModal() {
+            document.getElementById('gift-modal').classList.add('hidden');
         }
+
+        // 6. Blow Candle Interaction + Confetti Effect
+        function blowCandle() {
+            const flame = document.getElementById('candle-flame');
+            const status = document.getElementById('cake-status');
+            flame.classList.add('blown-out');
+            status.innerHTML = "🎉 Yay! Candle blown! May all your sweet wishes come true, baby! 🎂💖✨";
+            
+            // Trigger Confetti
+            if (window.confetti) {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // 7. Love Letters Switcher
+        function switchLetter(num) {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`letter-content-${i}`).classList.add('hidden');
+                const tab = document.getElementById(`letter-tab-${i}`);
+                tab.className = "px-4 py-2 bg-rose-100 text-rose-600 text-xs font-bold rounded-xl hover:bg-rose-200 transition-all";
+            }
+            document.getElementById(`letter-content-${num}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`letter-tab-${num}`);
+            activeTab.className = "px-4 py-2 bg-rose-500 text-white text-xs font-bold rounded-xl shadow-md transition-all";
+        }
+
+        // 8. Generate Floating Hearts Background Effect
+        function createHeart() {
+            const container = document.getElementById('hearts-container');
+            if (!container) return;
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = ['💖', '🌸', '✨', '💕', '🥰'][Math.floor(Math.random() * 5)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            heart.style.fontSize = Math.random() * 15 + 15 + 'px';
+            container.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }
+
+        setInterval(createHeart, 500);
     </script>
 </body>
 </html>
