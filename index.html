@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ziyad's Special Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fff5f7;
+            --card-bg: #ffffff;
+            --primary-pink: #ff758f;
+            --accent-pink: #ffb3c1;
+            --dark-text: #4a4e69;
+            --light-pink: #ffe5ec;
+            --purple-accent: #c77dff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--dark-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 28px;
+            box-shadow: 0 15px 35px rgba(255, 117, 143, 0.15);
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            border: 3px solid var(--light-pink);
+        }
+
+        /* Audio Player Bar */
+        .music-bar {
+            background: var(--light-pink);
+            border-radius: 50px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-pink);
+        }
+
+        .music-btn {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: 0 3px 8px rgba(255, 117, 143, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .music-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Pages logic */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fredoka', sans-serif;
+            color: var(--primary-pink);
+            letter-spacing: 0.5px;
+        }
+
+        h1 { font-size: 26px; margin-bottom: 6px; }
+        .subtitle { font-size: 14px; color: #888; font-weight: 600; margin-bottom: 20px; }
+
+        /* Page 1 Specific */
+        .emoji-hero {
+            font-size: 85px;
+            margin: 20px 0;
+            display: inline-block;
+            filter: drop-shadow(0 8px 15px rgba(255, 117, 143, 0.2));
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .timer-box {
+            background: var(--bg-color);
+            padding: 10px 5px;
+            border-radius: 16px;
+            border: 2px solid var(--accent-pink);
+        }
+
+        .timer-num {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'Fredoka', sans-serif;
+            color: var(--primary-pink);
+        }
+
+        .timer-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .tz-info {
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .btn-main {
+            background: linear-gradient(135deg, #ff758f, #ffb3c1);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 117, 143, 0.35);
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(255, 117, 143, 0.45);
+        }
+
+        .btn-main:active {
+            transform: translateY(1px);
+        }
+
+        /* Cute Question Cards */
+        .question-card {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 15px 0;
+            border: 2px dashed var(--accent-pink);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .btn-yes {
+            background: #ff758f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-no {
+            background: #e0e0e0;
+            color: #666;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1;
+            position: relative;
+        }
+
+        /* Gift Boxes Grid */
+        .gift-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .gift-item {
+            background: var(--bg-color);
+            border: 2px solid var(--accent-pink);
+            border-radius: 18px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--dark-text);
+            text-align: left;
+        }
+
+        .gift-item:hover {
+            background: var(--light-pink);
+            transform: scale(1.02);
+        }
+
+        .gift-item .icon {
+            font-size: 22px;
+        }
+
+        /* Modal / Popup for Gift Content */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            max-width: 420px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: left;
+            border: 3px solid var(--primary-pink);
+        }
+
+        .modal-title {
+            font-family: 'Fredoka', sans-serif;
+            color: var(--primary-pink);
+            font-size: 20px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .modal-body {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #444;
+            white-space: pre-line;
+        }
+
+        .modal-close {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            display: block;
+            margin: 18px auto 0 auto;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* Virtual Cake */
+        .cake-container {
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .cake-emoji {
+            font-size: 90px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .candle-status {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-pink);
+            margin-top: 10px;
+        }
+
+        /* Letters Section */
+        .letter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab-btn {
+            background: var(--light-pink);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-pink);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-pink);
+            color: white;
+        }
+
+        .letter-card {
+            background: var(--bg-color);
+            border-radius: 18px;
+            padding: 18px;
+            text-align: left;
+            font-size: 13.5px;
+            line-height: 1.6;
+            border: 2px solid var(--accent-pink);
+            min-height: 150px;
+        }
+
+        /* Couple Emoji Bar */
+        .couple-bar {
+            font-size: 28px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://files.catbox.moe/97a82p.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+
+        <!-- Sticky Music Player Bar -->
+        <div class="music-bar">
+            <span>🎵 Indila - Love Story</span>
+            <button class="music-btn" id="musicToggle" onclick="toggleMusic()">▶</button>
+        </div>
+
+        <!-- PAGE 1: Countdown Landing Page -->
+        <div class="page active" id="page1">
+            <h1>Ziyad's Special Day</h1>
+            <div class="subtitle">from your future wife, Wika 🧑‍🤝‍🧑❤️</div>
+
+            <div class="emoji-hero">👩‍❤️‍💋‍👨</div>
+
+            <div class="timer-grid">
+                <div class="timer-box">
+                    <div class="timer-num" id="days">00</div>
+                    <div class="timer-label">Days</div>
+                </div>
+                <div class="timer-box">
+                    <div class="timer-num" id="hours">00</div>
+                    <div class="timer-label">Hours</div>
+                </div>
+                <div class="timer-box">
+                    <div class="timer-num" id="mins">00</div>
+                    <div class="timer-label">Mins</div>
+                </div>
+                <div class="timer-box">
+                    <div class="timer-num" id="secs">00</div>
+                    <div class="timer-label">Secs</div>
+                </div>
+            </div>
+            <div class="tz-info">📍 Calculated in France Timezone (CET)</div>
+
+            <div class="couple-bar">👦🏻💖👧🏻</div>
+
+            <button class="btn-main" onclick="nextPage(2)">Next Surprise ➔</button>
+        </div>
+
+        <!-- PAGE 2: Cute Surprise Check -->
+        <div class="page" id="page2">
+            <h2>Are you ready for surprise, baby? 🥺✨</h2>
+            <div class="subtitle">Please think carefully before clicking!</div>
+
+            <div class="question-card">
+                <div style="font-size: 60px; margin-bottom: 10px;">🧸🎈</div>
+                <p style="font-weight: 700;">Are you excited to see what I made for you?</p>
+                <div class="btn-group">
+                    <button class="btn-yes" onclick="nextPage(3)">YES! 😍</button>
+                    <button class="btn-no" id="noBtn" onmouseover="dodgeBtn()" onclick="dodgeBtn()">NO 😜</button>
+                </div>
+            </div>
+            <div class="couple-bar">👩‍❤️‍👨</div>
+        </div>
+
+        <!-- PAGE 3: Interactive Gift Boxes -->
+        <div class="page" id="page3">
+            <h2>Gift Boxes For You 🎁❤️</h2>
+            <div class="subtitle">Click each gift to open your special message, baby!</div>
+
+            <div class="gift-grid">
+                <div class="gift-item" onclick="openGift(1)">
+                    <span>🎁 Gift 1: Open When You Miss Me</span>
+                    <span class="icon">💌</span>
+                </div>
+                <div class="gift-item" onclick="openGift(2)">
+                    <span>🎁 Gift 2: Reasons Why I Love You</span>
+                    <span class="icon">💖</span>
+                </div>
+                <div class="gift-item" onclick="openGift(3)">
+                    <span>🎁 Gift 3: Our Little Future</span>
+                    <span class="icon">🏡</span>
+                </div>
+                <div class="gift-item" onclick="openGift(4)">
+                    <span>🎁 Gift 4: When You Feel Sad</span>
+                    <span class="icon">🫂</span>
+                </div>
+                <div class="gift-item" onclick="openGift(5)" style="border-color: var(--primary-pink); background: var(--light-pink);">
+                    <span>🎁 Gift 5: When You Feel Bored of Me</span>
+                    <span class="icon">😭💢</span>
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="nextPage(4)">Make a Wish ➔</button>
+        </div>
+
+        <!-- PAGE 4: Virtual Birthday Cake -->
+        <div class="page" id="page4">
+            <h2>Virtual Cake For Baby 🎂✨</h2>
+            <div class="subtitle">It's calorie-free but full of love!</div>
+
+            <div class="cake-container">
+                <div class="cake-emoji" id="cakeEmoji" onclick="blowCandle()">🎂</div>
+                <div class="candle-status" id="cakeStatus">Tap the cake to blow out the candles! 🕯️✨</div>
+            </div>
+
+            <p style="font-size: 13px; color: #777; margin: 15px 0;">Make a wish in your heart before blowing! 💫</p>
+
+            <button class="btn-main" onclick="nextPage(5)">Read My Letters ➔</button>
+        </div>
+
+        <!-- PAGE 5: Letters To My Favorite Person -->
+        <div class="page" id="page5">
+            <h2>Letters To My Favorite Person 💌</h2>
+            <div class="subtitle">A collection of notes written just for you, baby!</div>
+
+            <div class="letter-tabs">
+                <button class="tab-btn active" onclick="showLetter(1)">Letter 1 🌸</button>
+                <button class="tab-btn" onclick="showLetter(2)">Letter 2 💖</button>
+                <button class="tab-btn" onclick="showLetter(3)">Letter 3 🌙</button>
+            </div>
+
+            <div class="letter-card" id="letterContent">
+                <!-- Letter 1 Content Default -->
+                <strong>My Dearest Ziyad,</strong><br><br>
+                Even though we are miles apart, you are always the closest person to my heart. Every single day with you feels like a blessing I never knew I needed. Thank you for being my comfort, my happy place, and my favorite person to share everything with.<br><br>
+                Forever yours,<br>
+                <strong>Wika 👧🏻❤️</strong>
+            </div>
+
+            <div class="couple-bar" style="margin-top: 15px;">🧑‍🤝‍🧑💕</div>
+
+            <button class="btn-main" onclick="nextPage(1)" style="background: var(--dark-text); margin-top: 15px;">Back to Start 🔄</button>
+        </div>
+
+    </div>
+
+    <!-- Modal Popup for Gifts -->
+    <div class="modal" id="giftModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">Gift Title</div>
+            <div class="modal-body" id="modalBody">Gift Content...</div>
+            <button class="modal-close" onclick="closeModal()">Close & Keep Safe 💖</button>
+        </div>
+    </div>
+
+    <script>
+        // Audio Toggle
+        const audio = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggle');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicBtn.innerText = "▶";
+            } else {
+                audio.play().then(() => {
+                    musicBtn.innerText = "⏸";
+                    isPlaying = true;
+                }).catch(e => {
+                    alert("Click anywhere on the page first to allow music autoplay!");
+                });
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Auto play on first click anywhere
+        document.body.addEventListener('click', function() {
+            if (!isPlaying) {
+                audio.play().then(() => {
+                    musicBtn.innerText = "⏸";
+                    isPlaying = true;
+                }).catch(() => {});
+            }
+        }, { once: true });
+
+        // Page Navigation
+        function nextPage(pageNum) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + pageNum).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Dodge No Button
+        function dodgeBtn() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - 100) - (window.innerWidth / 2) + 50;
+            const y = Math.random() * 100 - 50;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        // Countdown Timer to Jan 31, 2027 (France Time - CET/UTC+1)
+        function updateCountdown() {
+            // Target date: Jan 31, 2027 00:00:00 CET (UTC+1)
+            const targetDate = new Date("2027-01-31T00:00:00+01:00").getTime();
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = String(days).padStart(2, '0');
+                document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('mins').innerText = String(mins).padStart(2, '0');
+                document.getElementById('secs').innerText = String(secs).padStart(2, '0');
+            } else {
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('mins').innerText = "00";
+                document.getElementById('secs').innerText = "00";
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Gift Data
+        const giftContents = {
+            1: {
+                title: "🎁 Gift 1: Open When You Miss Me 💌",
+                text: "If you ever miss me a little too much, remember that somewhere in this world, there's a girl who's smiling just because she has you in her life."
+            },
+            2: {
+                title: "🎁 Gift 2: Reasons Why I Love You 💖",
+                text: "• I love how you share little details about your day with me.
+• I love how you made time to call me in your busy day.
+• I love the way you try to explain me multiple times bcs I don't got what the mean was.
+• I love the way u do your best to provide me.
+• I love the way you think.
+• I love the way you treat me.
+• I love when you call me with many nickname.
+• I love that I can learn new things from you.
+• I love the way you make ordinary conversations feel special.
+• Duh, still soo many, babyyyyy!! 🥹💖"
+            },
+            3: {
+                title: "🎁 Gift 3: Our Little Future 🏡",
+                text: "I don't need our future to be perfect. I just hope we keep choosing each other, keep growing together, and build a life that feels peaceful for both of us."
+            },
+            4: {
+                title: "🎁 Gift 4: When You Feel Sad 🫂",
+                text: "Hey, my love. 🥺❤️
+Hey, baby. Is something bothering you today?
+
+First of all, come here. Sending you the biggest virtual hug ever. 🫂❤️
+
+I know I can't always be there to hug you, hold your hand, or look into your eyes when things get difficult. But I hope you know that you don't have to pretend to be okay around me.
+
+You don't have to be strong all the time, my love. It's okay to feel tired, to have bad days, and to need a little time for yourself.
+
+If the world feels too heavy today, take a deep breath. You don't have to figure everything out right now. One step at a time, okay?
+
+And please remember that one bad day doesn't mean you have a bad life. You're doing better than you think, and I'm proud of you for everything you've been trying to do, even the things nobody else sees.
+
+I wish I could teleport to you right now, cuddle you, kiss your forehead, and annoy you until you finally smile. 😭❤️
+
+Until I can do that in person, here's your reminder:
+You are loved. You are appreciated. You are not alone. And you don't have to go through everything by yourself.
+
+I love you, my boy. On your happiest days, on your hardest days, and on the days when you don't even know how you feel.
+
+Now, come on. Give me a little smile, baby. Just one. For me? 🥹💋
+Your girl is always rooting for you. ❤️"
+            },
+            5: {
+                title: "🎁 Gift 5: EXCUSE ME, SIR??? 😭💢",
+                text: "Wait a damn minute.
+ARE YOU REALLY FEELING BORED WITH ME???
+HOW DARE YOUUUU!!! 😭😭😭💔
+
+ME??? BORING???
+The same girl who gives you unlimited access to her cuteness, her silliness, her random stories, her dramatic reactions, and her premium-quality nonsense EVERY SINGLE DAY???
+
+AND YOU HAVE THE AUDACITY TO BE BORED??? 😭🤨
+
+Oh, so that's how it is now, huh??? VERY INTERESTING, SIR. VERY INTERESTING. 🙂
+I see how it is.
+
+*Pretends to pack my bags while crying dramatically.* 🧳😭
+
+Fine. Go ahead. Find someone else who will annoy you, steal your attention, send you random pictures, ask you a million questions, and still love you even when you're being a little annoying yourself.
+
+I'LL WAIT. 😤💔
+...
+Okay, I'm done. Come back here. 😭🫂❤️"
+            }
+        };
+
+        function openGift(id) {
+            document.getElementById('modalTitle').innerText = giftContents[id].title;
+            document.getElementById('modalBody').innerText = giftContents[id].text;
+            document.getElementById('giftModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('giftModal').style.display = 'none';
+        }
+
+        // Blow Candle
+        let candleBlown = false;
+        function blowCandle() {
+            if (!candleBlown) {
+                document.getElementById('cakeEmoji').innerText = "🍰";
+                document.getElementById('cakeStatus').innerText = "Yay! Candle blown! All your wishes will come true, baby! 🎉🥳✨";
+                candleBlown = true;
+            }
+        }
+
+        // Letters Switcher
+        const letters = {
+            1: `<strong>My Dearest Ziyad,</strong><br><br>Even though we are miles apart, you are always the closest person to my heart. Every single day with you feels like a blessing I never knew I needed. Thank you for being my comfort, my happy place, and my favorite person to share everything with.<br><br>Forever yours,<br><strong>Wika 👧🏻❤️</strong>`,
+            2: `<strong>To My Love,</strong><br><br>Thank you for always listening to my endless stories, supporting my dreams, and making me feel so cherished even from afar. I hope this year brings you all the success, warmth, and happiness you truly deserve.<br><br>With all my love,<br><strong>Wika 🌸</strong>`,
+            3: `<strong>To My Favorite Person,</strong><br><br>I can't wait for the day when we don't have to count down the days through screens anymore. Until then, remember I'm always cheering for you, missing you, and loving you more each day.<br><br>Always & forever,<br><strong>Wika 👩‍❤️‍👨</strong>`
+        };
+
+        function showLetter(num) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('letterContent').innerHTML = letters[num];
+        }
+    </script>
+</body>
+</html>
